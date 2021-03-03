@@ -1,0 +1,54 @@
+{
+  "tests": [
+    {
+      "name": "Compile test",
+      "setup": "make",
+      "run": "./hw5 compile",
+      "input": "",
+      "output": "Compile test PASS",
+      "comparison": "included",
+      "timeout": 10,
+      "points": 20
+    },
+    {
+      "name": "Win test",
+      "setup": "make",
+      "run": "./hw5 win",
+      "input": "",
+      "output": "Win test PASS",
+      "comparison": "included",
+      "timeout": 10,
+      "points": 20
+    },
+    {
+      "name": "Piece test",
+      "setup": "make",
+      "run": "./hw5 piece",
+      "input": "",
+      "output": "Piece test PASS",
+      "comparison": "included",
+      "timeout": 10,
+      "points": 20
+    },
+    {
+      "name": "Move test",
+      "setup": "make",
+      "run": "./hw5 move",
+      "input": "",
+      "output": "Move test PASS",
+      "comparison": "included",
+      "timeout": 10,
+      "points": 20
+    },
+    {
+      "name": "Choice test",
+      "setup": "make",
+      "run": "./hw5 choice",
+      "input": "",
+      "output": "Choice test PASS",
+      "comparison": "included",
+      "timeout": 10,
+      "points": 20
+    }
+  ]
+}
