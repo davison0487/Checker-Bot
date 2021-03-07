@@ -16,6 +16,7 @@
 #include <algorithm>
 #include <math.h>
 #include <map>
+#include <functional>
 
 namespace ECE141 {
   

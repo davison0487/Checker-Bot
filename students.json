@@ -3,7 +3,7 @@
   "term"  : "WI21",
   "assignment"         : 5,
   "due_date"           : "Mar. 14, 2021, 11:15p",
-  "total_effort_hours" : 0,
+  "total_effort_hours" : 5,
   "students": [
     {
       "name " : "Yunhsiu Wu",
@@ -16,6 +16,6 @@
       "pid"   : "Partner StudentId (if any)",
       "email" : "Partner Email (if any)",
       "os"    : "windows|mac|linux"
-    },
+    }
   ]
 }
