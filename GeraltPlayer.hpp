@@ -19,10 +19,8 @@ namespace ECE141 {
     using Board = std::vector<std::vector<char>>;
 
     class Game; //forward declare...  
-
-    //enum class PieceColor  {gold, blue};
-    //blue's row index goes up, gold's row index goes down
-
+    
+    //store a old position and a new position
     struct Move {
     public:
         Location oldLocation;
@@ -34,34 +32,42 @@ namespace ECE141 {
     public:
         GeraltPlayer();
         virtual bool      takeTurn(Game& aGame, Orientation aDirection, std::ostream& aLog);
-        
-        
+                
     private:
         //reset varibles and update board status from the game
         void updateBoardStatus(Game& aGame);
 
-        //determine if a location is valid
-        bool isValidLocation(Location& aLocation);
+        //determine if a location is valid, look for empty spot by default
+        bool isValidLocation(const Board& aBoard, int aRow, int aCol, char aPiece = '.');
 
         //evaluate the safety score of a new board and new location
-        int safetyScore(const Board& aBoard, Location& aLocation);
+        int blueSafetyScore(const Board& aBoard, Location& aLocation);
+        int goldSafetyScore(const Board& aBoard, Location& aLocation);
 
         //evaluate the total score of a new board and new location
-        int evaluateMove(const Board& aBoard, Location& aLocation);
+        void evaluateMove(const Board& aBoard, Location& aLocation, bool aJump = false);
         
         //move a piece and creat a new board
-        Board createNewBoard(const Board &aBoard, Move& aMove);
+        Board createNewBoard(const Board& aBoard, Move& aMove, Location aCaptured = Location(-1, -1));
+
+        //show the board, for debugging
+        void showBoard(const Board& aBoard);
 
         //compute and evaluate moves
         void computeBlueMoves(const Board &aBoard, Location aLocation, bool aFirstMove = false);
         void computeGoldMoves(const Board &aBoard, Location aLocation, bool aFirstMove = false);
-                
+
         Board theBoard;
 
+        /* used for evaluating moves */
         const Piece* curPiece;
+        const Piece* bestJumpPiece;
+        Location bestJumpLocation;
+        int maxJumpScore;
         const Piece* bestPiece;
         Location bestLocation;
         int maxScore;
+        /* used for evaluating moves */
     };
 }
 
