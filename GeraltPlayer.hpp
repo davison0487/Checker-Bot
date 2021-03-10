@@ -33,7 +33,7 @@ namespace ECE141 {
         GeraltPlayer();
         virtual bool      takeTurn(Game& aGame, Orientation aDirection, std::ostream& aLog);
                 
-    private:
+    protected:
         //reset varibles and update board status from the game
         void updateBoardStatus(Game& aGame);
 
@@ -62,12 +62,17 @@ namespace ECE141 {
         /* used for evaluating moves */
         const Piece* curPiece;
         const Piece* bestJumpPiece;
-        Location bestJumpLocation;
+        std::vector<Location> tempJumpLocation;
+        std::vector<Location> bestJumpLocation;
         int maxJumpScore;
         const Piece* bestPiece;
         Location bestLocation;
         int maxScore;
         /* used for evaluating moves */
+    };
+
+    class GeraltPlayer2 : public GeraltPlayer {
+        void evaluateMove(const Board& aBoard, Location& aLocation, bool aJump = false);
     };
 }
 

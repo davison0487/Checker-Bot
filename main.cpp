@@ -26,7 +26,7 @@ int main(int argc, const char * argv[]) {
   if(argc>1) {
     
     ECE141::GeraltPlayer player1;  //Use your own player class here...
-    ECE141::GeraltPlayer player2;  //Make two players from YOUR player class
+    ECE141::GeraltPlayer2 player2;  //Make two players from YOUR player class
     
     std::stringstream theStream;
     
