@@ -13,6 +13,7 @@
 #include <iostream>
 #include <vector>
 #include <stack>
+#include <unordered_map>
 
 namespace ECE141 {
 
@@ -43,6 +44,10 @@ namespace ECE141 {
         //evaluate the safety score of a new board and new location
         int blueSafetyScore(const Board& aBoard, Location& aLocation);
         int goldSafetyScore(const Board& aBoard, Location& aLocation);
+        
+        //compute and evaluate future moves
+        int evaluateBlueFutureMoves(const Board& aBoard, Location aLocation);
+        int evaluateGoldFutureMoves(const Board& aBoard, Location aLocation);
 
         //evaluate the total score of a new board and new location
         void evaluateMove(const Board& aBoard, Location& aLocation, bool aJump = false);
@@ -52,7 +57,7 @@ namespace ECE141 {
 
         //show the board, for debugging
         void showBoard(const Board& aBoard);
-
+       
         //compute and evaluate moves
         void computeBlueMoves(const Board &aBoard, Location aLocation, bool aFirstMove = false);
         void computeGoldMoves(const Board &aBoard, Location aLocation, bool aFirstMove = false);
@@ -72,7 +77,17 @@ namespace ECE141 {
     };
 
     class GeraltPlayer2 : public GeraltPlayer {
+    public:
+        virtual bool takeTurn(Game& aGame, Orientation aDirection, std::ostream& aLog);
+
+    protected:
         void evaluateMove(const Board& aBoard, Location& aLocation, bool aJump = false);
+
+        //compute and evaluate moves
+        void computeBlueMoves(const Board& aBoard, Location aLocation, bool aFirstMove = false);
+        void computeGoldMoves(const Board& aBoard, Location aLocation, bool aFirstMove = false);
+
+        std::unordered_map<const Piece*, Location> theRandomMoves;
     };
 }
 

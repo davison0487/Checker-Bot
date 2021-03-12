@@ -48,23 +48,23 @@ int main(int argc, const char * argv[]) {
     }
     else if("win"==temp) {
       size_t theCount=runTest(ECE141::Reasons::eliminated, theStream);
-      std::cout << "Win test (" << theStatus[theCount!=5] << ")\n";
-      std::cout << "\n" << theStream.str() << "\n";
+      std::cout << "Win test " << theStatus[theCount!=5] << "\n";
+      //std::cout << "\n" << theStream.str() << "\n";
     }
     else if ("move"==temp) {
       size_t theCount=runTest(ECE141::Reasons::badmove, theStream);
-      std::cout << "Move test (" << theStatus[theCount==5] << ")\n";
+      std::cout << "Move test " << theStatus[theCount==5] << "\n";
       std::cout << "\n" << theStream.str() << "\n";
     }
     else if ("piece"==temp) {
       size_t theCount=runTest(ECE141::Reasons::moved2, theStream);
-      std::cout << "Piece test (" << theStatus[theCount == 5] << ")\n";
+      std::cout << "Piece test " << theStatus[theCount == 5] << "\n";
       std::cout << "\n" << theStream.str() << "\n";
       
     }
     else if ("choice"==temp) {
       size_t theCount=runTest(ECE141::Reasons::missedJump, theStream);
-      std::cout << "Choice test (" << theStatus[theCount==5] << ")\n";
+      std::cout << "Choice test " << theStatus[theCount==5] << "\n";
       std::cout << "\n" << theStream.str() << "\n";     
     }
   }

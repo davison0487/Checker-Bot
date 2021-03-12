@@ -44,7 +44,7 @@ namespace ECE141 {
                         theBoard[i][j] = 'G';
                     else
                         theBoard[i][j] = 'g';
-                }                
+                }
             }
         }
 
@@ -53,7 +53,7 @@ namespace ECE141 {
         tempJumpLocation.clear();
         bestJumpLocation.clear();
         bestPiece = nullptr;
-        bestLocation = Location(-1, -1 );
+        bestLocation = Location(-1, -1);
         maxJumpScore = std::numeric_limits<int>::min();
         maxScore = std::numeric_limits<int>::min();
 
@@ -65,7 +65,7 @@ namespace ECE141 {
             return false;
         if (aRow < 0 || aRow >= kBoardSize)
             return false;
-        
+
         return tolower(aBoard[aRow][aCol]) == aPiece;
     }
 
@@ -84,9 +84,9 @@ namespace ECE141 {
             (aBoard[row - 1][col + 1] == '.' || tolower(aBoard[row - 1][col + 1]) == 'b') &&
             (aBoard[row - 1][col - 1] == '.' || tolower(aBoard[row - 1][col - 1]) == 'b'))
             return 4;
-        
-            
-            //diagonally adjacent to opponent, dangerous
+
+
+        //diagonally adjacent to opponent, dangerous
         if (tolower(aBoard[row - 1][col - 1]) == 'g')
             score -= 2;
         if (tolower(aBoard[row - 1][col + 1]) == 'g')
@@ -182,6 +182,118 @@ namespace ECE141 {
         return score;
     }
 
+    int GeraltPlayer::evaluateBlueFutureMoves(const Board& aBoard, Location aLocation) {
+        //blue's row index goes down
+        int row = aLocation.row;
+        int col = aLocation.col;
+        Location curLocation(row, col);
+        bool isKing = aBoard[row][col] == 'B';
+
+        int score = 0;
+
+        //jump
+        if (isValidLocation(aBoard, row - 1, col - 1, 'g')) {
+            if (isValidLocation(aBoard, row - 2, col - 2)) {
+                score += 2;
+                Location newLocation(row - 2, col - 2);
+                Location capturedLocation(row - 1, col - 1);
+                Move theMove(curLocation, newLocation);
+                Board newBoard = createNewBoard(aBoard, theMove, capturedLocation);
+                score += evaluateBlueFutureMoves(newBoard, newLocation);
+            }
+        }
+        if (isValidLocation(aBoard, row - 1, col + 1, 'g')) {
+            if (isValidLocation(aBoard, row - 2, col + 2)) {
+                score += 2;
+                Location newLocation(row - 2, col + 2);
+                Location capturedLocation(row - 1, col + 1);
+                Move theMove(curLocation, newLocation);
+                Board newBoard = createNewBoard(aBoard, theMove, capturedLocation);
+                score += evaluateBlueFutureMoves(newBoard, newLocation);
+            }
+        }
+        if (isKing) {
+            if (isValidLocation(aBoard, row + 1, col - 1, 'g')) {
+                if (isValidLocation(aBoard, row + 2, col - 2)) {
+                    score += 2;
+                    Location newLocation(row + 2, col - 2);
+                    Location capturedLocation(row + 1, col - 1);
+                    Move theMove(curLocation, newLocation);
+                    Board newBoard = createNewBoard(aBoard, theMove, capturedLocation);
+                    score += evaluateBlueFutureMoves(newBoard, newLocation);
+                }
+            }
+            if (isValidLocation(aBoard, row + 1, col + 1, 'g')) {
+                if (isValidLocation(aBoard, row + 2, col + 2)) {
+                    score += 2;
+                    Location newLocation(row + 2, col + 2);
+                    Location capturedLocation(row + 1, col + 1);
+                    Move theMove(curLocation, newLocation);
+                    Board newBoard = createNewBoard(aBoard, theMove, capturedLocation);
+                    score += evaluateBlueFutureMoves(newBoard, newLocation);
+                }
+            }
+        }
+
+        return score;
+    }
+
+    int GeraltPlayer::evaluateGoldFutureMoves(const Board& aBoard, Location aLocation) {
+        //gold's row index goes up
+        int row = aLocation.row;
+        int col = aLocation.col;
+        Location curLocation(row, col);
+        bool isKing = aBoard[row][col] == 'G';
+
+        int score = 0;
+
+        //jump
+        if (isValidLocation(aBoard, row + 1, col - 1, 'b')) {
+            if (isValidLocation(aBoard, row + 2, col - 2)) {
+                score += 2;
+                Location newLocation(row + 2, col - 2);
+                Location capturedLocation(row + 1, col - 1);
+                Move theMove(curLocation, newLocation);
+                Board newBoard = createNewBoard(aBoard, theMove, capturedLocation);
+                score += evaluateGoldFutureMoves(newBoard, newLocation);
+            }
+        }
+        if (isValidLocation(aBoard, row + 1, col + 1, 'b')) {
+            if (isValidLocation(aBoard, row + 2, col + 2)) {
+                score += 2;
+                Location newLocation(row + 2, col + 2);
+                Location capturedLocation(row + 1, col + 1);
+                Move theMove(curLocation, newLocation);
+                Board newBoard = createNewBoard(aBoard, theMove, capturedLocation);
+                score += evaluateGoldFutureMoves(newBoard, newLocation);
+            }
+        }
+        if (isKing) {
+            if (isValidLocation(aBoard, row - 1, col - 1, 'b')) {
+                if (isValidLocation(aBoard, row - 2, col - 2)) {
+                    score += 2;
+                    Location newLocation(row - 2, col - 2);
+                    Location capturedLocation(row - 1, col - 1);
+                    Move theMove(curLocation, newLocation);
+                    Board newBoard = createNewBoard(aBoard, theMove, capturedLocation);
+                    score += evaluateGoldFutureMoves(newBoard, newLocation);
+                }
+            }
+            if (isValidLocation(aBoard, row - 1, col + 1, 'b')) {
+                if (isValidLocation(aBoard, row - 2, col + 2)) {
+                    score += 2;
+                    Location newLocation(row - 2, col + 2);
+                    Location capturedLocation(row - 1, col + 1);
+                    Move theMove(curLocation, newLocation);
+                    Board newBoard = createNewBoard(aBoard, theMove, capturedLocation);
+                    score += evaluateGoldFutureMoves(newBoard, newLocation);
+                }
+            }
+        }
+
+        return score;
+    }
+
     void GeraltPlayer::evaluateMove(const Board& aBoard, Location& aLocation, bool aJump) {
         //showBoard(aBoard);
         int score = 0;
@@ -191,9 +303,6 @@ namespace ECE141 {
         char oppKing = this->color == PieceColor::blue ? 'G' : 'B';
         char ownKing = this->color == PieceColor::blue ? 'B' : 'G';
 
-        int oldKingCount = 0;
-        int newKingCount = 0;
-
         for (int i = 0; i < kBoardSize; ++i) {
             for (int j = 0; j < kBoardSize; ++j) {
                 //pawn captured
@@ -202,15 +311,15 @@ namespace ECE141 {
                 //king captured
                 if (theBoard[i][j] == oppKing && aBoard[i][j] != oppKing)
                     score += 11;
-                if (aBoard[i][j] == ownKing)
-                    ++newKingCount;
-                if (theBoard[i][j] == ownKing)
-                    ++oldKingCount;
             }
         }
 
+        if (score >= 0)
+            score += this->color == PieceColor::blue ? evaluateBlueFutureMoves(aBoard, aLocation) : evaluateGoldFutureMoves(aBoard, aLocation);
+
         //a king is born
-        if (newKingCount > oldKingCount)
+        if (curPiece->getKind() == PieceKind::pawn &&
+            aBoard[aLocation.row][aLocation.col] == ownKing)
             score += 15;
 
         srand(static_cast<uint32_t>(time(0)));
@@ -273,16 +382,16 @@ namespace ECE141 {
         std::cout << "     0   1   2   3   4   5   6   7\n";
     }
 
-    void GeraltPlayer::computeBlueMoves(const Board &aBoard, Location aLocation, bool aFirstMove) {
+    void GeraltPlayer::computeBlueMoves(const Board& aBoard, Location aLocation, bool aFirstMove) {
         //blue's row index goes down
         int row = aLocation.row;
         int col = aLocation.col;
         Location curLocation(row, col);
         bool isKing = aBoard[row][col] == 'B';
         bool outOfMove = true;
-        
+
         if (aFirstMove) { //move
-            if (isValidLocation(aBoard, row - 1, col - 1)) {                
+            if (isValidLocation(aBoard, row - 1, col - 1)) {
                 Location newLocation(row - 1, col - 1);
                 Move theMove(curLocation, newLocation);
                 Board newBoard = createNewBoard(aBoard, theMove);
@@ -309,7 +418,7 @@ namespace ECE141 {
                 }
             }
         }
-        
+
         //jump
         if (isValidLocation(aBoard, row - 1, col - 1, 'g')) {
             if (isValidLocation(aBoard, row - 2, col - 2)) {
@@ -330,7 +439,7 @@ namespace ECE141 {
                 Location capturedLocation(row - 1, col + 1);
                 Move theMove(curLocation, newLocation);
                 Board newBoard = createNewBoard(aBoard, theMove, capturedLocation);
-                tempJumpLocation.push_back(newLocation); 
+                tempJumpLocation.push_back(newLocation);
                 computeBlueMoves(newBoard, newLocation);
                 tempJumpLocation.pop_back();
             }
@@ -365,10 +474,10 @@ namespace ECE141 {
         if (!aFirstMove && outOfMove) {
             evaluateMove(aBoard, aLocation, true);
         }
-        
+
     }
 
-    void GeraltPlayer::computeGoldMoves(const Board &aBoard, Location aLocation, bool aFirstMove) {
+    void GeraltPlayer::computeGoldMoves(const Board& aBoard, Location aLocation, bool aFirstMove) {
         //gold's row index goes up
         int row = aLocation.row;
         int col = aLocation.col;
@@ -469,15 +578,15 @@ namespace ECE141 {
         updateBoardStatus(aGame);
         //showBoard(this->theBoard);
 
-        for (int pos = 0; pos < theCount; pos++) {            
-             if(const Piece *thePiece = aGame.getAvailablePiece(this->color, pos)) {
-                 curPiece = thePiece;
-                 if (this->color == PieceColor::blue)
-                     computeBlueMoves(this->theBoard, thePiece->getLocation(), true);
-                 else
-                     computeGoldMoves(this->theBoard, thePiece->getLocation(), true);
-                 curPiece = nullptr;
-             }
+        for (int pos = 0; pos < theCount; pos++) {
+            if (const Piece* thePiece = aGame.getAvailablePiece(this->color, pos)) {
+                curPiece = thePiece;
+                if (this->color == PieceColor::blue)
+                    computeBlueMoves(this->theBoard, thePiece->getLocation(), true);
+                else
+                    computeGoldMoves(this->theBoard, thePiece->getLocation(), true);
+                curPiece = nullptr;
+            }
         }
 
         //if a move jumped, must choose it
@@ -489,7 +598,7 @@ namespace ECE141 {
 
         //make the move with best score
         if (bestPiece != nullptr) {
-            aGame.movePieceTo(*bestPiece, bestLocation);            
+            aGame.movePieceTo(*bestPiece, bestLocation);
         }
 
         //no available piece, forfeit
@@ -505,9 +614,6 @@ namespace ECE141 {
         char oppKing = this->color == PieceColor::blue ? 'G' : 'B';
         char ownKing = this->color == PieceColor::blue ? 'B' : 'G';
 
-        int oldKingCount = 0;
-        int newKingCount = 0;
-
         for (int i = 0; i < kBoardSize; ++i) {
             for (int j = 0; j < kBoardSize; ++j) {
                 //pawn captured
@@ -516,15 +622,12 @@ namespace ECE141 {
                 //king captured
                 if (theBoard[i][j] == oppKing && aBoard[i][j] != oppKing)
                     score += 11;
-                if (aBoard[i][j] == ownKing)
-                    ++newKingCount;
-                if (theBoard[i][j] == ownKing)
-                    ++oldKingCount;
             }
         }
 
         //a king is born
-        if (newKingCount > oldKingCount)
+        if (curPiece->getKind() == PieceKind::pawn &&
+            aBoard[aLocation.row][aLocation.col] == ownKing)
             score += 15;
 
         srand(static_cast<uint32_t>(time(0)));
@@ -554,6 +657,251 @@ namespace ECE141 {
             }
         }
 
+    }
+
+    void GeraltPlayer2::computeBlueMoves(const Board& aBoard, Location aLocation, bool aFirstMove) {
+        //blue's row index goes down
+        int row = aLocation.row;
+        int col = aLocation.col;
+        Location curLocation(row, col);
+        bool isKing = aBoard[row][col] == 'B';
+        bool outOfMove = true;
+
+        if (aFirstMove) { //move
+            if (isValidLocation(aBoard, row - 1, col - 1)) {
+                Location newLocation(row - 1, col - 1);
+                Move theMove(curLocation, newLocation);
+                Board newBoard = createNewBoard(aBoard, theMove);
+                evaluateMove(newBoard, newLocation);
+                theRandomMoves.insert({ curPiece, newLocation });
+            }
+            if (isValidLocation(aBoard, row - 1, col + 1)) {
+                Location newLocation(row - 1, col + 1);
+                Move theMove(curLocation, newLocation);
+                Board newBoard = createNewBoard(aBoard, theMove);
+                evaluateMove(newBoard, newLocation);
+                theRandomMoves.insert({ curPiece, newLocation });
+            }
+            if (isKing) {
+                if (isValidLocation(aBoard, row + 1, col - 1)) {
+                    Location newLocation(row + 1, col - 1);
+                    Move theMove(curLocation, newLocation);
+                    Board newBoard = createNewBoard(aBoard, theMove);
+                    evaluateMove(newBoard, newLocation);
+                    theRandomMoves.insert({ curPiece, newLocation });
+                }
+                if (isValidLocation(aBoard, row + 1, col + 1)) {
+                    Location newLocation(row + 1, col + 1);
+                    Move theMove(curLocation, newLocation);
+                    Board newBoard = createNewBoard(aBoard, theMove);
+                    evaluateMove(newBoard, newLocation);
+                    theRandomMoves.insert({ curPiece, newLocation });
+                }
+            }
+        }
+
+        //jump
+        if (isValidLocation(aBoard, row - 1, col - 1, 'g')) {
+            if (isValidLocation(aBoard, row - 2, col - 2)) {
+                outOfMove = false;
+                Location newLocation(row - 2, col - 2);
+                Location capturedLocation(row - 1, col - 1);
+                Move theMove(curLocation, newLocation);
+                Board newBoard = createNewBoard(aBoard, theMove, capturedLocation);
+                tempJumpLocation.push_back(newLocation);
+                computeBlueMoves(newBoard, newLocation);
+                tempJumpLocation.pop_back();
+            }
+        }
+        if (isValidLocation(aBoard, row - 1, col + 1, 'g')) {
+            if (isValidLocation(aBoard, row - 2, col + 2)) {
+                outOfMove = false;
+                Location newLocation(row - 2, col + 2);
+                Location capturedLocation(row - 1, col + 1);
+                Move theMove(curLocation, newLocation);
+                Board newBoard = createNewBoard(aBoard, theMove, capturedLocation);
+                tempJumpLocation.push_back(newLocation);
+                computeBlueMoves(newBoard, newLocation);
+                tempJumpLocation.pop_back();
+            }
+        }
+        if (isKing) {
+            if (isValidLocation(aBoard, row + 1, col - 1, 'g')) {
+                if (isValidLocation(aBoard, row + 2, col - 2)) {
+                    outOfMove = false;
+                    Location newLocation(row + 2, col - 2);
+                    Location capturedLocation(row + 1, col - 1);
+                    Move theMove(curLocation, newLocation);
+                    Board newBoard = createNewBoard(aBoard, theMove, capturedLocation);
+                    tempJumpLocation.push_back(newLocation);
+                    computeBlueMoves(newBoard, newLocation);
+                    tempJumpLocation.pop_back();
+                }
+            }
+            if (isValidLocation(aBoard, row + 1, col + 1, 'g')) {
+                if (isValidLocation(aBoard, row + 2, col + 2)) {
+                    outOfMove = false;
+                    Location newLocation(row + 2, col + 2);
+                    Location capturedLocation(row + 1, col + 1);
+                    Move theMove(curLocation, newLocation);
+                    Board newBoard = createNewBoard(aBoard, theMove, capturedLocation);
+                    tempJumpLocation.push_back(newLocation);
+                    computeBlueMoves(newBoard, newLocation);
+                    tempJumpLocation.pop_back();
+                }
+            }
+        }
+
+        if (!aFirstMove && outOfMove) {
+            evaluateMove(aBoard, aLocation, true);
+        }
+
+    }
+
+    void GeraltPlayer2::computeGoldMoves(const Board& aBoard, Location aLocation, bool aFirstMove) {
+        //gold's row index goes up
+        int row = aLocation.row;
+        int col = aLocation.col;
+        Location curLocation(row, col);
+        bool isKing = aBoard[row][col] == 'G';
+        bool outOfMove = true;
+
+        //move
+        if (aFirstMove) {
+            if (isValidLocation(aBoard, row + 1, col - 1)) {
+                Location newLocation(row + 1, col - 1);
+                Move theMove(curLocation, newLocation);
+                Board newBoard = createNewBoard(aBoard, theMove);
+                evaluateMove(newBoard, newLocation);
+                theRandomMoves.insert({ curPiece, newLocation });
+            }
+            if (isValidLocation(aBoard, row + 1, col + 1)) {
+                Location newLocation(row + 1, col + 1);
+                Move theMove(curLocation, newLocation);
+                Board newBoard = createNewBoard(aBoard, theMove);
+                evaluateMove(newBoard, newLocation);
+                theRandomMoves.insert({ curPiece, newLocation });
+            }
+            if (isKing) {
+                if (isValidLocation(aBoard, row - 1, col - 1)) {
+                    Location newLocation(row - 1, col - 1);
+                    Move theMove(curLocation, newLocation);
+                    Board newBoard = createNewBoard(aBoard, theMove);
+                    evaluateMove(newBoard, newLocation);
+                    theRandomMoves.insert({ curPiece, newLocation });
+                }
+                if (isValidLocation(aBoard, row - 1, col + 1)) {
+                    Location newLocation(row - 1, col + 1);
+                    Move theMove(curLocation, newLocation);
+                    Board newBoard = createNewBoard(aBoard, theMove);
+                    evaluateMove(newBoard, newLocation);
+                    theRandomMoves.insert({ curPiece, newLocation });
+                }
+            }
+        }
+
+        //jump
+        if (isValidLocation(aBoard, row + 1, col - 1, 'b')) {
+            if (isValidLocation(aBoard, row + 2, col - 2)) {
+                outOfMove = false;
+                Location newLocation(row + 2, col - 2);
+                Location capturedLocation(row + 1, col - 1);
+                Move theMove(curLocation, newLocation);
+                Board newBoard = createNewBoard(aBoard, theMove, capturedLocation);
+                tempJumpLocation.push_back(newLocation);
+                computeGoldMoves(newBoard, newLocation);
+                tempJumpLocation.pop_back();
+            }
+        }
+        if (isValidLocation(aBoard, row + 1, col + 1, 'b')) {
+            if (isValidLocation(aBoard, row + 2, col + 2)) {
+                outOfMove = false;
+                Location newLocation(row + 2, col + 2);
+                Location capturedLocation(row + 1, col + 1);
+                Move theMove(curLocation, newLocation);
+                Board newBoard = createNewBoard(aBoard, theMove, capturedLocation);
+                tempJumpLocation.push_back(newLocation);
+                computeGoldMoves(newBoard, newLocation);
+                tempJumpLocation.pop_back();
+            }
+        }
+        if (isKing) {
+            if (isValidLocation(aBoard, row - 1, col - 1, 'b')) {
+                if (isValidLocation(aBoard, row - 2, col - 2)) {
+                    outOfMove = false;
+                    Location newLocation(row - 2, col - 2);
+                    Location capturedLocation(row - 1, col - 1);
+                    Move theMove(curLocation, newLocation);
+                    Board newBoard = createNewBoard(aBoard, theMove, capturedLocation);
+                    tempJumpLocation.push_back(newLocation);
+                    computeGoldMoves(newBoard, newLocation);
+                    tempJumpLocation.pop_back();
+                }
+            }
+            if (isValidLocation(aBoard, row - 1, col + 1, 'b')) {
+                if (isValidLocation(aBoard, row - 2, col + 2)) {
+                    outOfMove = false;
+                    Location newLocation(row - 2, col + 2);
+                    Location capturedLocation(row - 1, col + 1);
+                    Move theMove(curLocation, newLocation);
+                    Board newBoard = createNewBoard(aBoard, theMove, capturedLocation);
+                    tempJumpLocation.push_back(newLocation);
+                    computeGoldMoves(newBoard, newLocation);
+                    tempJumpLocation.pop_back();
+                }
+            }
+        }
+
+        if (!aFirstMove && outOfMove) {
+            evaluateMove(aBoard, aLocation, true);
+        }
+
+    }
+
+    bool GeraltPlayer2::takeTurn(Game& aGame, Orientation aDirection, std::ostream& aLog) {
+        size_t theCount = aGame.countAvailablePieces(color);
+        updateBoardStatus(aGame);
+        //showBoard(this->theBoard);
+
+        for (int pos = 0; pos < theCount; pos++) {
+            if (const Piece* thePiece = aGame.getAvailablePiece(this->color, pos)) {
+                curPiece = thePiece;
+                if (this->color == PieceColor::blue)
+                    computeBlueMoves(this->theBoard, thePiece->getLocation(), true);
+                else
+                    computeGoldMoves(this->theBoard, thePiece->getLocation(), true);
+                curPiece = nullptr;
+            }
+        }
+
+        //if a move jumped, must choose it
+        if (bestJumpPiece != nullptr) {
+            for (auto location : bestJumpLocation)
+                aGame.movePieceTo(*bestJumpPiece, location);
+            return true;
+        }
+
+        //make the move with best score
+        //if (rand() % 3 == 0) {
+            if (bestPiece != nullptr) {
+                aGame.movePieceTo(*bestPiece, bestLocation);
+                return true;
+            }
+        /*}
+        else {
+            int randomNum = rand() % theRandomMoves.size();
+            for (auto& cur : theRandomMoves) {
+                if (--randomNum == 0) {
+                    aGame.movePieceTo(*(cur.first), cur.second);
+                    std::cout << "move " << cur.first->getLocation().row << ", " << cur.first->getLocation().row
+                        << " to" << cur.second.row << ", " << cur.second.col << '\n';
+                    return true;
+                }
+            }
+        }*/
+
+        //no available piece, forfeit
+        return true;
     }
 
 }
