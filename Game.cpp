@@ -279,7 +279,7 @@ namespace ECE141 {
     }
     
     //-- USE: confirm piece can move that direction  -------------------
-    float isValidDirection(const Piece &aPiece, const Location &aSrc, const Location &aDest) {
+    bool isValidDirection(const Piece &aPiece, const Location &aSrc, const Location &aDest) {
       if(PieceKind::pawn==aPiece.getKind()) {
         return aPiece.hasColor(PieceColor::gold) ? aSrc.row<aDest.row : aSrc.row>aDest.row;
       }
@@ -287,7 +287,7 @@ namespace ECE141 {
     }
     
     //-- USE: determine whether kingable piece is opponent first row  ----
-    float isKingable(const Piece &aPiece, const Location &aDest) {
+    bool isKingable(const Piece &aPiece, const Location &aDest) {
       if(PieceKind::pawn==aPiece.getKind()) {
         return aPiece.hasColor(PieceColor::blue) ? 0==aDest.row : (scale-1)==aDest.row;
       }
